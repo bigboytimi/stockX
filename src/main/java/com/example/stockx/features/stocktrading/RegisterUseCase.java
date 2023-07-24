@@ -14,4 +14,5 @@ public interface RegisterUseCase {
     public InvestmentProfileResponse getInvestmentProfileData();
 
     public UpdateUserResponse updateUserDetails(UpdateUserRequest request);
+    public String verifyUserIdentity(IdentityRequest request);
 }

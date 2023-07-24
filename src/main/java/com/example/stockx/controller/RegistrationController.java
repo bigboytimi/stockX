@@ -1,12 +1,10 @@
 package com.example.stockx.controller;
 
+import com.example.stockx.dtos.request.IdentityRequest;
 import com.example.stockx.dtos.request.InvestmentProfileRequest;
 import com.example.stockx.dtos.request.PhoneVerificationRequest;
 import com.example.stockx.dtos.request.SignupRequest;
-import com.example.stockx.dtos.response.GlobalResponse;
-import com.example.stockx.dtos.response.InvestmentProfileResponse;
-import com.example.stockx.dtos.response.PhoneVerificationResponse;
-import com.example.stockx.dtos.response.SignupResponse;
+import com.example.stockx.dtos.response.*;
 import com.example.stockx.features.stocktrading.RegisterUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,5 +39,10 @@ public class RegistrationController {
     }
 
     @PostMapping("/verify-identity")
-    public ResponseEntity<GlobalResponse<>>
+    public ResponseEntity<GlobalResponse<String>> verifyIdentity(@RequestBody IdentityRequest request){
+        GlobalResponse<String> response = new GlobalResponse<>(registerUseCase.verifyUserIdentity(request));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 }
