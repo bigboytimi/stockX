@@ -1,18 +1,12 @@
 package com.example.stockx.controller;
 
-import com.example.stockx.dtos.request.IdentityRequest;
-import com.example.stockx.dtos.request.InvestmentProfileRequest;
-import com.example.stockx.dtos.request.PhoneVerificationRequest;
-import com.example.stockx.dtos.request.SignupRequest;
+import com.example.stockx.dtos.request.*;
 import com.example.stockx.dtos.response.*;
-import com.example.stockx.features.stocktrading.RegisterUseCase;
+import com.example.stockx.features.profile_mgmt.registration.RegisterUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -44,5 +38,26 @@ public class RegistrationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/add-affiliations")
+    public ResponseEntity<GlobalResponse<String>> addAffiliations(@RequestBody AffiliationRequest request){
+        GlobalResponse<String> response = new GlobalResponse<>(registerUseCase.addAffiliation(request));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
+    @GetMapping("/profile")
+    public ResponseEntity<GlobalResponse<ClientDetailsResponse>> getClient(){
+        GlobalResponse<ClientDetailsResponse> response = new GlobalResponse<>(registerUseCase.getClient());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @PatchMapping("/profile/update-user-info")
+    public ResponseEntity<GlobalResponse<UpdateUserResponse>> updateUser(@RequestBody UpdateUserRequest request){
+        GlobalResponse<UpdateUserResponse> response = new GlobalResponse<>(registerUseCase.updateUserDetails(request));
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+    }
+
+    @PatchMapping("/profile/update-password")
+    public ResponseEntity<GlobalResponse<UpdatePasswordResponse>> updateUser(@RequestBody UpdatePasswordRequest request){
+        GlobalResponse<UpdatePasswordResponse> response = new GlobalResponse<>(registerUseCase.updatePassword(request));
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+    }
 }

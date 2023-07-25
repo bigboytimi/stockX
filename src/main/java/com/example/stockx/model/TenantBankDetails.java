@@ -1,15 +1,28 @@
 package com.example.stockx.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class TenantBankDetails {
-    private String swift_aba_code;
-    private String intermediary_code;
+    @SerializedName("swift_aba_code")
+    private String swiftAbaCode;
+    @SerializedName("intermediary_code")
+    private String intermediaryCode;
+
     private String currency;
-    private String beneficiary_name;
-    private String bank_zip_code;
-    private String bank_state;
-    private String bank_name;
-    private String bank_country;
-    private String bank_address;
-    private String additional_instructions;
-    private String account_number;
+    @SerializedName("beneficiary_name")
+    private String beneficiaryName;
+    @SerializedName("bank_zip_code")
+    private String bankZipCode;
+    @SerializedName("bank_state")
+    private String bankState;
+    @SerializedName("bank_name")
+    private String bankName;
+    @SerializedName("bank_country")
+    private String bankCountry;
+    @SerializedName("bank_address")
+    private String bankAddress;
+    @SerializedName("additional_instructions")
+    private String additionalInstructions;
+    @SerializedName("account_number")
+    private String accountNumber;
 }

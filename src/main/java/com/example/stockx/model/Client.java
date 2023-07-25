@@ -1,6 +1,8 @@
 package com.example.stockx.model;
 
 import com.example.stockx.enums.CountryCode;
+import com.example.stockx.enums.Gender;
+import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,15 +18,21 @@ public class Client {
     @Id
     private int id;
     private String surname;
-    private CountryCode residence_country_code;
-    private String referral_code;
-    private String phone_number;
+    @SerializedName("residence_country_code")
+    private CountryCode residenceCountryCode;
+    @SerializedName("referral_code")
+    private String referralCode;
+    @SerializedName("phone_number")
+    private String phoneNumber;
     private String password;
     private String name;
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     private String email;
-    private String date_of_birth;
-    private String country_code;
+    @SerializedName("date_of_birth")
+    private String dateOfBirth;
+    @SerializedName("country_code")
+    private String countryCode;
     private String citizenship;
     @Embedded
     private InvestmentProfile investmentProfile;
