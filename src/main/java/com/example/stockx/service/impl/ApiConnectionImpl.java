@@ -48,18 +48,13 @@ public class ApiConnectionImpl implements ApiConnection {
     }
 
     @Override
-    public <R> R connectAndGet(String url, HttpMethod method, Class<R> responseClass) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("accept_language", "en-US");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("app-key", "appKey");
+    public ResponseEntity<String> connectAndGet(HttpHeaders headers, String url, HttpMethod method) {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
 
         try{
-            ResponseEntity<R> response = getRestTemplate().exchange(
-                    url, method,httpEntity,responseClass);
-            return response.getBody();
+            return getRestTemplate().exchange(
+                    url, method,httpEntity,String.class);
         }catch(Exception e){
             e.printStackTrace();
             throw new APIConnectionException("Request Failed, Please Try Again");

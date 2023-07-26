@@ -2,6 +2,7 @@ package com.example.stockx.controller;
 
 import com.example.stockx.dtos.request.*;
 import com.example.stockx.dtos.response.*;
+import com.example.stockx.exception.InvalidRequestException;
 import com.example.stockx.features.profile_mgmt.registration.RegisterUseCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,12 @@ public class RegistrationController {
     @PostMapping("/login")
     public ResponseEntity<GlobalResponse<LoginResponse>> loginUser(@RequestBody LoginRequest request) throws JsonProcessingException {
         GlobalResponse<LoginResponse> response = new GlobalResponse<>(registerUseCase.loginCustomer(request));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<GlobalResponse<TokenRefreshResponse>> refreshToken(@RequestBody TokenRefreshRequest request) throws JsonProcessingException {
+        GlobalResponse<TokenRefreshResponse> response = new GlobalResponse<>(registerUseCase.refreshCustomerToken(request));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -52,19 +59,19 @@ public class RegistrationController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<GlobalResponse<ClientDetailsResponse>> getClient(){
+    public ResponseEntity<GlobalResponse<ClientDetailsResponse>> getClient() throws InvalidRequestException {
         GlobalResponse<ClientDetailsResponse> response = new GlobalResponse<>(registerUseCase.getClient());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PatchMapping("/profile/update-user-info")
-    public ResponseEntity<GlobalResponse<UpdateUserResponse>> updateUser(@RequestBody UpdateUserRequest request){
-        GlobalResponse<UpdateUserResponse> response = new GlobalResponse<>(registerUseCase.updateUserDetails(request));
+    public ResponseEntity<GlobalResponse<String>> updateUser(@RequestBody UpdateUserRequest request) throws InvalidRequestException {
+        GlobalResponse<String> response = new GlobalResponse<>(registerUseCase.updateUserDetails(request));
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     @PatchMapping("/profile/update-password")
-    public ResponseEntity<GlobalResponse<UpdatePasswordResponse>> updateUser(@RequestBody UpdatePasswordRequest request){
-        GlobalResponse<UpdatePasswordResponse> response = new GlobalResponse<>(registerUseCase.updatePassword(request));
+    public ResponseEntity<GlobalResponse<String>> updateUser(@RequestBody UpdatePasswordRequest request) throws InvalidRequestException {
+        GlobalResponse<String> response = new GlobalResponse<>(registerUseCase.updatePassword(request));
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 }

@@ -7,9 +7,7 @@ import com.example.stockx.dtos.payload.Registration;
 import com.example.stockx.dtos.request.*;
 import com.example.stockx.dtos.response.*;
 import com.example.stockx.enums.Gender;
-import com.example.stockx.exception.APIConnectionException;
-import com.example.stockx.exception.LoginFailedException;
-import com.example.stockx.exception.VerificationFailedException;
+import com.example.stockx.exception.*;
 import com.example.stockx.features.profile_mgmt.registration.RegisterUseCase;
 import com.example.stockx.model.Customer;
 import com.example.stockx.model.InvestmentProfile;
@@ -22,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
+import org.apache.hc.client5.http.impl.classic.RequestFailedException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -120,7 +119,19 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
 
     @Override
     public TokenRefreshResponse refreshCustomerToken(TokenRefreshRequest request) {
-        return null;
+        String requestBody = gson.toJson(request);
+
+        Type responseType = new TypeToken<TokenRefreshResponse>() {}.getType();
+        ResponseEntity<String> apiResponse = stockTradingService.refreshToken(requestBody);
+        HttpStatusCode statusCode = extractStatusCode(apiResponse);
+        if (statusCode.is2xxSuccessful()){
+            return gson.fromJson(apiResponse.getBody(), responseType);
+        } else {
+            CustomResponse<Map<String, Object>> customResponse = parseApiResponse(apiResponse.getBody(), new TypeReference<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new AuthenticationFailedException(message);
+        }
     }
 
     @Override
@@ -148,8 +159,21 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
     }
 
     @Override
-    public ClientDetailsResponse getClient() {
-        return null;
+    public ClientDetailsResponse getClient() throws InvalidRequestException {
+        Type responseType = new TypeToken<PhoneVerificationResponse>(){}.getType();
+
+        ResponseEntity<String> apiResponse = stockTradingService.getClientDetails();
+        HttpStatusCode statusCode = extractStatusCode(apiResponse);
+        String responseBody = apiResponse.getBody();
+
+        if (statusCode.is2xxSuccessful()){
+            return gson.fromJson(responseBody, responseType);
+        } else{
+            CustomResponse<Map<String, Object>> customResponse = parseApiResponse(responseBody, new TypeReference<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new InvalidRequestException(message);
+        }
     }
 
     @Override
@@ -158,13 +182,35 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
     }
 
     @Override
-    public UpdateUserResponse updateUserDetails(UpdateUserRequest request) {
-        return null;
+    public String updateUserDetails(UpdateUserRequest request) throws InvalidRequestException {
+        String requestBody = gson.toJson(request);
+        
+        ResponseEntity<String> apiResponse = stockTradingService.updateUserInfo(requestBody);
+        HttpStatusCode statusCode = extractStatusCode(apiResponse);
+        if (statusCode.is2xxSuccessful()){
+            return "Profile successfully updated";
+        } else {
+            CustomResponse<Map<String, Object>> customResponse = parseApiResponse(apiResponse.getBody(), new TypeReference<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new InvalidRequestException(message);
+        }
     }
 
     @Override
-    public UpdatePasswordResponse updatePassword(UpdatePasswordRequest request) {
-        return null;
+    public String updatePassword(UpdatePasswordRequest request) throws InvalidRequestException {
+        String requestBody = gson.toJson(request);
+
+        ResponseEntity<String> apiResponse = stockTradingService.updatePassword(requestBody);
+        HttpStatusCode statusCode = extractStatusCode(apiResponse);
+        if (statusCode.is2xxSuccessful()){
+            return "Password successfully updated";
+        }else{
+            CustomResponse<Map<String, Object>> customResponse = parseApiResponse(apiResponse.getBody(), new TypeReference<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new InvalidRequestException(message);
+        }
     }
 
     @Override
@@ -173,9 +219,11 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
         Identity identityDetails = request.getData();
 
         String requestBody = gson.toJson(identityDetails);
-        Type responseType = new TypeToken<String>(){}.getType();
+
         ResponseEntity<String> apiResponse = stockTradingService.verifyIdentity(clientToken, requestBody);
+
         HttpStatusCode statusCode = extractStatusCode(apiResponse);
+
         if (statusCode.is2xxSuccessful()){
             return "Identity queued for verification";
         } else{
@@ -194,7 +242,7 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
 
         String requestBody = gson.toJson(affiliationData);
 
-        Type responseType = new TypeToken<String>(){}.getType();
+
         ResponseEntity<String> apiResponse = stockTradingService.createAffiliation(clientToken, requestBody);
         HttpStatusCode statusCode = extractStatusCode(apiResponse);
         if (statusCode.is2xxSuccessful()){

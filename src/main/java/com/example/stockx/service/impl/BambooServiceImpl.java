@@ -75,12 +75,51 @@ public class BambooServiceImpl implements AuthService, StockTradingService {
         return apiConnection.postAndGetResponseEntity(headers, requestBody, url, HttpMethod.POST);
     }
 
+    @Override
+    public ResponseEntity<String> refreshToken(String requestBody) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/refresh_token";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("accept-language", "en-US");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return apiConnection.postAndGetResponseEntity(headers, requestBody, url, HttpMethod.POST);
+    }
+
+    @Override
+    public ResponseEntity<String> getClientDetails() {
+       String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/profile";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("accept-language", "en-US");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("x_subject_type", "standard");
+        return apiConnection.connectAndGet(headers, url, HttpMethod.POST);
+    }
+
+    @Override
+    public ResponseEntity<String> updateUserInfo(String requestBody) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/profile";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("accept-language", "en-US");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("x_subject_type", "standard");
+        return apiConnection.postAndGetResponseEntity(headers, requestBody, url, HttpMethod.PATCH);
+    }
+
+    @Override
+    public ResponseEntity<String> updatePassword(String requestBody) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/profile/password";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("accept-language", "en-US");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("x_subject_type", "standard");
+        return apiConnection.postAndGetResponseEntity(headers, requestBody, url, HttpMethod.PATCH);
+    }
+
     public static HttpHeaders setHeaders(String clientToken){
         HttpHeaders headers = new HttpHeaders();
         headers.set("accept-language", "en-US");
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x-subject-type", "standard");
-        headers.set("x-client-token", clientToken);
+        headers.set("x_subject_type", "standard");
+        headers.set("x_client_token", clientToken);
         return headers;
     }
 }

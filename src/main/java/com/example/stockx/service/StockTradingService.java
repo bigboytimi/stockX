@@ -11,5 +11,10 @@ public interface StockTradingService {
     public ResponseEntity<String> verifyIdentity(String clientToken, String requestBody);
     public ResponseEntity<String> createAffiliation(String clientToken, String requestBody);
     public ResponseEntity<String> loginUser(String requestBody);
+    public ResponseEntity<String> refreshToken(String requestBody);
+    public ResponseEntity<String> getClientDetails();
+    public ResponseEntity<String> updateUserInfo(String requestBody);
+
+    public ResponseEntity<String> updatePassword(String requestBody);
 }
 
