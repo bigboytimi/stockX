@@ -174,7 +174,16 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
 
         String requestBody = gson.toJson(identityDetails);
         Type responseType = new TypeToken<String>(){}.getType();
-        String apiResponse = stockTradingService.verifyIdentity(clientToken, requestBody);
+        ResponseEntity<String> apiResponse = stockTradingService.verifyIdentity(clientToken, requestBody);
+        HttpStatusCode statusCode = extractStatusCode(apiResponse);
+        if (statusCode.is2xxSuccessful()){
+            return "Identity queued for verification";
+        } else{
+            CustomResponse<Map<String, Object>> customResponse = parseApiResponse(apiResponse.getBody(), new TypeReference<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new VerificationFailedException(message);
+        }
 
     }
 
@@ -186,8 +195,16 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
         String requestBody = gson.toJson(affiliationData);
 
         Type responseType = new TypeToken<String>(){}.getType();
-        String apiResponse = stockTradingService.createAffiliation(clientToken, requestBody);
-
+        ResponseEntity<String> apiResponse = stockTradingService.createAffiliation(clientToken, requestBody);
+        HttpStatusCode statusCode = extractStatusCode(apiResponse);
+        if (statusCode.is2xxSuccessful()){
+            return "Investment profile created";
+        } else{
+            CustomResponse<Map<String, Object>> customResponse = parseApiResponse(apiResponse.getBody(), new TypeReference<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new VerificationFailedException(message);
+        }
     }
 
     public static <T> CustomResponse<T> parseApiResponse(String jsonResponse, TypeReference<CustomResponse<Map<String, Object>>> valueType){

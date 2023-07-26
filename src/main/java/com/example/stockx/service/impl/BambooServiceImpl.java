@@ -53,17 +53,17 @@ public class BambooServiceImpl implements AuthService, StockTradingService {
     }
 
     @Override
-    public String verifyIdentity(String clientToken, String requestBody) {
+    public ResponseEntity<String> verifyIdentity(String clientToken, String requestBody) {
         String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/verify_identity_identifier";
         HttpHeaders headers = setHeaders(clientToken);
-        return apiConnection.connectAndPost(headers, requestBody, url, HttpMethod.POST, String.class);
+        return apiConnection.postAndGetResponseEntity(headers, requestBody, url, HttpMethod.POST);
     }
 
     @Override
-    public String createAffiliation(String clientToken, String requestBody) {
+    public ResponseEntity<String> createAffiliation(String clientToken, String requestBody) {
         String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/affiliations";
         HttpHeaders headers = setHeaders(clientToken);
-        return apiConnection.connectAndPost(headers, requestBody, url, HttpMethod.POST, String.class);
+        return apiConnection.postAndGetResponseEntity(headers, requestBody, url, HttpMethod.POST);
     }
 
     @Override
