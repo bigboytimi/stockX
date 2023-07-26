@@ -9,11 +9,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public interface RegisterUseCase {
     public SignupResponse registerCustomer(SignupRequest request);
     public LoginResponse loginCustomer(LoginRequest request) throws JsonProcessingException;
-    public InvestmentProfileResponse createInvestmentProfile(InvestmentProfileRequest request);
+    public String createInvestmentProfile(InvestmentProfileRequest request) throws InvalidRequestException;
     public TokenRefreshResponse refreshCustomerToken(TokenRefreshRequest request);
     public PhoneVerificationResponse verifyPhoneNumber(PhoneVerificationRequest request);
     public ClientDetailsResponse getClient() throws InvalidRequestException;
-    public InvestmentProfileResponse getInvestmentProfileData();
+    public InvestmentProfileResponse getInvestmentProfileData() throws InvalidRequestException;
     public String updateUserDetails(UpdateUserRequest request) throws InvalidRequestException;
     public String updatePassword(UpdatePasswordRequest request) throws InvalidRequestException;
     public String verifyUserIdentity(IdentityRequest request);

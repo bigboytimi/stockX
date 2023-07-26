@@ -91,7 +91,7 @@ public class BambooServiceImpl implements AuthService, StockTradingService {
         headers.set("accept-language", "en-US");
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("x_subject_type", "standard");
-        return apiConnection.connectAndGet(headers, url, HttpMethod.POST);
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
     }
 
     @Override
@@ -112,6 +112,17 @@ public class BambooServiceImpl implements AuthService, StockTradingService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("x_subject_type", "standard");
         return apiConnection.postAndGetResponseEntity(headers, requestBody, url, HttpMethod.PATCH);
+    }
+
+    @Override
+    public ResponseEntity<String> getInvestmentDetails() {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/investment_profile";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("accept-language", "en-US");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("x_subject_type", "standard");
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
+
     }
 
     public static HttpHeaders setHeaders(String clientToken){

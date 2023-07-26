@@ -16,5 +16,8 @@ public interface StockTradingService {
     public ResponseEntity<String> updateUserInfo(String requestBody);
 
     public ResponseEntity<String> updatePassword(String requestBody);
+
+
+    public ResponseEntity<String> getInvestmentDetails();
 }
 

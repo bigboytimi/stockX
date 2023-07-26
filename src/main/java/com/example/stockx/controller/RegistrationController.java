@@ -41,8 +41,8 @@ public class RegistrationController {
     }
 
     @PostMapping("/create-investment-profile")
-    public ResponseEntity<GlobalResponse<InvestmentProfileResponse>> createInvestmentProfile(@RequestBody InvestmentProfileRequest request){
-        GlobalResponse<InvestmentProfileResponse> response = new GlobalResponse<>(registerUseCase.createInvestmentProfile(request));
+    public ResponseEntity<GlobalResponse<String>> createInvestmentProfile(@RequestBody InvestmentProfileRequest request) throws InvalidRequestException {
+        GlobalResponse<String> response = new GlobalResponse<>(registerUseCase.createInvestmentProfile(request));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -73,5 +73,11 @@ public class RegistrationController {
     public ResponseEntity<GlobalResponse<String>> updateUser(@RequestBody UpdatePasswordRequest request) throws InvalidRequestException {
         GlobalResponse<String> response = new GlobalResponse<>(registerUseCase.updatePassword(request));
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/investment-profile")
+    public ResponseEntity<GlobalResponse<InvestmentProfileResponse>> getInvestmentProfile() throws InvalidRequestException {
+        GlobalResponse<InvestmentProfileResponse> response = new GlobalResponse<>(registerUseCase.getInvestmentProfileData());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
