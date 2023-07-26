@@ -1,5 +1,6 @@
 package com.example.stockx.controller;
 
+import com.example.stockx.dtos.response.GlobalResponse;
 import com.example.stockx.dtos.response.TokenResponse;
 import com.example.stockx.dtos.request.TokenRequest;
 import com.example.stockx.features.authorization.OauthUseCase;

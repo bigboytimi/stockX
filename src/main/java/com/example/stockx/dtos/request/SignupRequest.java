@@ -1,15 +1,18 @@
 package com.example.stockx.dtos.request;
 
+import com.example.stockx.dtos.payload.Registration;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Builder
+@Getter
+@Setter
 public class SignupRequest {
-    private String surname;
-    private String residence_country_code;
-    private String referral_code;
-    private String phone_number;
-    private String password;
-    private String name;
-    private String gender;
-    private String email;
-    private String date_of_birth;
-    private String country_code;
-    private String citizenship;
+
+    private String clientToken;
+    private Registration data;
+
 }

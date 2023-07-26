@@ -1,6 +1,15 @@
 package com.example.stockx.dtos.request;
 
+import com.example.stockx.dtos.payload.PhoneVerification;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Builder
+@Getter
+@Setter
 public class PhoneVerificationRequest {
-    private String verification_code;
-    private String phone_number;
+    private String clientToken;
+    private PhoneVerification data;
+
 }

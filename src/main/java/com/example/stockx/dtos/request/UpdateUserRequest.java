@@ -1,7 +1,5 @@
 package com.example.stockx.dtos.request;
 
-import com.example.stockx.enums.CountryCode;
-
 public class UpdateUserRequest {
 
     private String email;

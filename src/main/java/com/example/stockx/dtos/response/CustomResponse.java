@@ -7,8 +7,6 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class LoginResponse {
-    private UserResponse user;
-    private String refresh_token;
-    private String jwt;
+public class CustomResponse {
+    private String message;
 }

@@ -19,13 +19,13 @@ public class ApiConnectionImpl implements ApiConnection {
     @Value("${app-key}")
     private String appKey;
     @Override
-    public <T, R> R connectAndPost(HttpHeaders headers, T postBody, String url, HttpMethod method, Class<R> responseBody) {
+    public <T, R> R connectAndPost(HttpHeaders headers, T postBody, String url, HttpMethod method, Class<R> responseClass) {
 
         HttpEntity<T> httpEntity = new HttpEntity<>(postBody, headers);
 
         try{
             ResponseEntity<R> response = getRestTemplate().exchange(
-                    url, method,httpEntity,responseBody);
+                    url, method,httpEntity,responseClass);
             return response.getBody();
         }catch(Exception e){
             e.printStackTrace();

@@ -20,6 +20,12 @@ public class RegistrationController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<GlobalResponse<LoginResponse>> loginUser(@RequestBody LoginRequest request){
+        GlobalResponse<LoginResponse> response = new GlobalResponse<>(registerUseCase.loginCustomer(request));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/verify-number")
     public ResponseEntity<GlobalResponse<PhoneVerificationResponse>> verifyPhoneNumber(@RequestBody PhoneVerificationRequest request){
         GlobalResponse<PhoneVerificationResponse> response = new GlobalResponse<>(registerUseCase.verifyPhoneNumber(request));

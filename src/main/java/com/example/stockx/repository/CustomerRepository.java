@@ -1,9 +1,9 @@
 package com.example.stockx.repository;
 
-import com.example.stockx.model.Client;
+import com.example.stockx.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClientRepository extends JpaRepository<Client, Long> {
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
 }
