@@ -4,7 +4,7 @@ public class UpdateUserRequest {
 
     private String email;
     private String surname;
-    private CountryCode residence_country_code;
+    private String residence_country_code;
     private String referral_code;
     private String phone_number;
     private String password;

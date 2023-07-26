@@ -7,18 +7,27 @@ import com.example.stockx.dtos.payload.Registration;
 import com.example.stockx.dtos.request.*;
 import com.example.stockx.dtos.response.*;
 import com.example.stockx.enums.Gender;
+import com.example.stockx.exception.APIConnectionException;
+import com.example.stockx.exception.LoginFailedException;
+import com.example.stockx.exception.VerificationFailedException;
 import com.example.stockx.features.profile_mgmt.registration.RegisterUseCase;
 import com.example.stockx.model.Customer;
 import com.example.stockx.model.InvestmentProfile;
 import com.example.stockx.repository.CustomerRepository;
 import com.example.stockx.service.StockTradingService;
 import com.example.stockx.utils.PasswordUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +36,7 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
     private final Gson gson;
     private final PasswordUtils encoder;
     private final CustomerRepository customerRepository;
+    private final ObjectMapper objectMapper;
     @Override
     public SignupResponse registerCustomer(SignupRequest request) {
         String clientToken = request.getClientToken();
@@ -66,12 +76,23 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
     }
 
     @Override
-    public LoginResponse loginCustomer(LoginRequest request) {
+    public LoginResponse loginCustomer(LoginRequest request) throws JsonProcessingException {
        String requestBody = gson.toJson(request);
        Type responseType = new TypeToken<LoginResponse>(){}.getType();
 
-       LoginResponse apiResponse = stockTradingService.loginUser(requestBody);
-       return apiResponse;
+       ResponseEntity<String> apiResponse = stockTradingService.loginUser(requestBody);
+
+        HttpStatusCode statusCode = apiResponse.getStatusCode();
+        String apiResponseBody = apiResponse.getBody();
+
+        if (statusCode.is2xxSuccessful()){
+            return gson.fromJson(apiResponseBody, responseType);
+        } else {
+            CustomResponse<Map<String, Object>> customResponse = parseApiResponse(apiResponseBody, new TypeReference<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new LoginFailedException(message);
+        }
     }
 
     @Override
@@ -82,9 +103,19 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
         String requestBody = gson.toJson(profileData);
         Type responseType = new TypeToken<PhoneVerificationResponse>(){}.getType();
 
-        String apiResponse = stockTradingService.createProfile(clientToken, requestBody);
+        ResponseEntity<String> apiResponse = stockTradingService.createProfile(clientToken, requestBody);
+        HttpStatusCode statusCode = extractStatusCode(apiResponse);
 
-        return gson.fromJson(apiResponse, responseType);
+        String responseBody = apiResponse.getBody();
+
+        if (statusCode.is2xxSuccessful()){
+            return gson.fromJson(responseBody, responseType);
+        } else {
+            CustomResponse<Map<String, Object>> customResponse = parseApiResponse(responseBody, new TypeReference<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new LoginFailedException(message);
+        }
     }
 
     @Override
@@ -101,10 +132,19 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
 
         Type responseType = new TypeToken<PhoneVerificationResponse>(){}.getType();
 
-        String apiResponse = stockTradingService.verifyNumber(clientToken, requestBody);
+        ResponseEntity<String> apiResponse = stockTradingService.verifyNumber(clientToken, requestBody);
+        HttpStatusCode statusCode = extractStatusCode(apiResponse);
+        String apiResponseBody = apiResponse.getBody();
 
-        //todo: extract only the refresh token and jwt from the response
-        return gson.fromJson(apiResponse, responseType);
+        if (statusCode.is2xxSuccessful()){
+            return gson.fromJson(apiResponseBody, responseType);
+        } else{
+            CustomResponse<Map<String, Object>> customResponse = parseApiResponse(apiResponseBody, new TypeReference<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new VerificationFailedException(message);
+        }
+
     }
 
     @Override
@@ -134,9 +174,8 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
 
         String requestBody = gson.toJson(identityDetails);
         Type responseType = new TypeToken<String>(){}.getType();
-        CustomResponse apiResponse = stockTradingService.verifyIdentity(clientToken, requestBody);
+        String apiResponse = stockTradingService.verifyIdentity(clientToken, requestBody);
 
-        return apiResponse.getMessage();
     }
 
     @Override
@@ -147,8 +186,22 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
         String requestBody = gson.toJson(affiliationData);
 
         Type responseType = new TypeToken<String>(){}.getType();
-        CustomResponse apiResponse = stockTradingService.createAffiliation(clientToken, requestBody);
-        return apiResponse.getMessage();
+        String apiResponse = stockTradingService.createAffiliation(clientToken, requestBody);
+
     }
 
+    public static <T> CustomResponse<T> parseApiResponse(String jsonResponse, TypeReference<CustomResponse<Map<String, Object>>> valueType){
+        CustomResponse<T> customResponse;
+        try {
+            customResponse = objectMapper.readValue(jsonResponse, valueType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new APIConnectionException("Request Failed, Please Try Again");
+        }
+        return customResponse;
+    }
+
+    public static HttpStatusCode extractStatusCode(ResponseEntity<String> entity){
+        return entity.getStatusCode();
+    }
 }

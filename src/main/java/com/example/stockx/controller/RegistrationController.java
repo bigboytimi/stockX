@@ -3,6 +3,7 @@ package com.example.stockx.controller;
 import com.example.stockx.dtos.request.*;
 import com.example.stockx.dtos.response.*;
 import com.example.stockx.features.profile_mgmt.registration.RegisterUseCase;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<GlobalResponse<LoginResponse>> loginUser(@RequestBody LoginRequest request){
+    public ResponseEntity<GlobalResponse<LoginResponse>> loginUser(@RequestBody LoginRequest request) throws JsonProcessingException {
         GlobalResponse<LoginResponse> response = new GlobalResponse<>(registerUseCase.loginCustomer(request));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

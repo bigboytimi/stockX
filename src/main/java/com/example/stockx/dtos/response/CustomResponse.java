@@ -1,12 +1,13 @@
 package com.example.stockx.dtos.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
-public class CustomResponse {
-    private String message;
+@AllArgsConstructor
+@NoArgsConstructor
+public class CustomResponse<T> {
+    private T data;
+
 }

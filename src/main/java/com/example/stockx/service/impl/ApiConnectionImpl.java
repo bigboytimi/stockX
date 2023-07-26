@@ -35,6 +35,19 @@ public class ApiConnectionImpl implements ApiConnection {
     }
 
     @Override
+    public ResponseEntity<String> postAndGetResponseEntity(HttpHeaders headers, String postBody, String url, HttpMethod method) {
+        HttpEntity<String> httpEntity = new HttpEntity<>(postBody, headers);
+
+        try {
+            ResponseEntity<String> response = getRestTemplate().exchange(url, method, httpEntity, String.class);
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new APIConnectionException("Request Failed, Please Try Again");
+        }
+    }
+
+    @Override
     public <R> R connectAndGet(String url, HttpMethod method, Class<R> responseClass) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("accept_language", "en-US");
