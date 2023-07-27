@@ -1,4 +1,4 @@
-package com.example.stockx.features.profile_mgmt.registration;
+package com.example.stockx.features.registration;
 
 
 import com.example.stockx.dtos.request.*;

@@ -19,5 +19,8 @@ public interface StockTradingService {
 
 
     public ResponseEntity<String> getInvestmentDetails();
+
+    public ResponseEntity<String> getStocks(String limit, Integer nextToken);
+
 }
 

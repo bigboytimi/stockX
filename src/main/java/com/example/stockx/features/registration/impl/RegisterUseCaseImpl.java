@@ -1,4 +1,4 @@
-package com.example.stockx.features.profile_mgmt.registration.impl;
+package com.example.stockx.features.registration.impl;
 
 import com.example.stockx.dtos.payload.Affiliation;
 import com.example.stockx.dtos.payload.Identity;
@@ -8,7 +8,7 @@ import com.example.stockx.dtos.request.*;
 import com.example.stockx.dtos.response.*;
 import com.example.stockx.enums.Gender;
 import com.example.stockx.exception.*;
-import com.example.stockx.features.profile_mgmt.registration.RegisterUseCase;
+import com.example.stockx.features.registration.RegisterUseCase;
 import com.example.stockx.model.Customer;
 import com.example.stockx.model.InvestmentProfile;
 import com.example.stockx.repository.CustomerRepository;
@@ -16,13 +16,9 @@ import com.example.stockx.service.StockTradingService;
 import com.example.stockx.utils.PasswordUtils;
 import com.example.stockx.utils.ResponseParserUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
-import org.apache.hc.client5.http.impl.classic.RequestFailedException;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

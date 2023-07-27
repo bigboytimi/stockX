@@ -3,7 +3,7 @@ package com.example.stockx.controller;
 import com.example.stockx.dtos.request.*;
 import com.example.stockx.dtos.response.*;
 import com.example.stockx.exception.InvalidRequestException;
-import com.example.stockx.features.profile_mgmt.registration.RegisterUseCase;
+import com.example.stockx.features.registration.RegisterUseCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,13 +1,15 @@
-package com.example.stockx.features.profile_mgmt.deposit.impl;
+package com.example.stockx.features.account_mgmt.impl;
 
 import com.example.stockx.dtos.payload.Deposit;
 import com.example.stockx.dtos.request.DepositRequest;
 import com.example.stockx.dtos.request.HeaderRequest;
 import com.example.stockx.dtos.response.AccountDetailsResponse;
 import com.example.stockx.dtos.response.CustomResponse;
-import com.example.stockx.dtos.response.DepositResponse;
+import com.example.stockx.dtos.response.DepositLinkResponse;
+import com.example.stockx.dtos.response.DepositsResponse;
 import com.example.stockx.exception.InvalidRequestException;
-import com.example.stockx.features.profile_mgmt.deposit.AccountUseCase;
+import com.example.stockx.exception.VerificationFailedException;
+import com.example.stockx.features.account_mgmt.AccountUseCase;
 import com.example.stockx.service.AccountService;
 import com.example.stockx.utils.ResponseParserUtils;
 import com.google.gson.Gson;
@@ -27,14 +29,14 @@ public class AccountUseCaseImpl implements AccountUseCase {
     private final ResponseParserUtils parserUtils;
 
     @Override
-    public DepositResponse depositMoney(DepositRequest request) throws InvalidRequestException {
+    public DepositLinkResponse depositMoney(DepositRequest request) throws InvalidRequestException {
         String clientToken = request.getClientToken();
         String requestSource = request.getRequestSource();
         Deposit deposit = request.getData();
 
         String requestBody = gson.toJson(deposit);
 
-        Type responseType = new TypeToken<DepositResponse>() {
+        Type responseType = new TypeToken<DepositLinkResponse>() {
         }.getType();
 
         ResponseEntity<String> apiResponse = accountService.deposit(clientToken, requestSource, requestBody);
@@ -66,7 +68,27 @@ public class AccountUseCaseImpl implements AccountUseCase {
             CustomResponse<Map<String, Object>> customResponse = parserUtils.parseApiResponse(responseBody, new TypeToken<CustomResponse<Map<String, Object>>>() {});
             Map<String, Object> data = customResponse.getData();
             String message = (String) data.get("message");
-            throw new InvalidRequestException(message);
+            throw new VerificationFailedException(message);
+        }
+    }
+
+    @Override
+    public DepositsResponse getDeposits(HeaderRequest request, String limit, Integer nextToken, String startDate, String endDate) {
+        String clientToken = request.getClientToken();
+        String requestSource = request.getRequestSource();
+        Type responseType = new TypeToken<DepositsResponse>() {
+        }.getType();
+
+        ResponseEntity<String> apiResponse = accountService.fetchDeposits(clientToken, requestSource, limit, nextToken, startDate, endDate);
+
+        String responseBody = apiResponse.getBody();
+        if (apiResponse.getStatusCode().is2xxSuccessful()){
+            return gson.fromJson(responseBody, responseType);
+        } else {
+            CustomResponse<Map<String, Object>> customResponse = parserUtils.parseApiResponse(responseBody, new TypeToken<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new VerificationFailedException(message);
         }
     }
 

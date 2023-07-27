@@ -6,6 +6,7 @@ import com.example.stockx.service.AccountService;
 import com.example.stockx.service.ApiConnection;
 import com.example.stockx.service.AuthService;
 import com.example.stockx.service.StockTradingService;
+import com.example.stockx.utils.HeaderUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+import static com.example.stockx.utils.HeaderUtils.setHeaders;
 
 @Service
 @RequiredArgsConstructor
@@ -88,65 +94,69 @@ public class BambooServiceImpl implements AuthService, StockTradingService, Acco
     @Override
     public ResponseEntity<String> getClientDetails() {
        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/profile";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("accept-language", "en-US");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x_subject_type", "standard");
+        HttpHeaders headers = setHeaders();
         return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
     }
 
     @Override
     public ResponseEntity<String> updateUserInfo(String requestBody) {
         String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/profile";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("accept-language", "en-US");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x_subject_type", "standard");
+        HttpHeaders headers = setHeaders();
         return apiConnection.postAndGetResponseEntity(headers, requestBody, url, HttpMethod.PATCH);
     }
 
     @Override
     public ResponseEntity<String> updatePassword(String requestBody) {
         String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/profile/password";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("accept-language", "en-US");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x_subject_type", "standard");
+        HttpHeaders headers = setHeaders();
         return apiConnection.postAndGetResponseEntity(headers, requestBody, url, HttpMethod.PATCH);
     }
 
     @Override
     public ResponseEntity<String> getInvestmentDetails() {
         String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/investment_profile";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("accept-language", "en-US");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x_subject_type", "standard");
+        HttpHeaders headers = setHeaders();
         return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
 
     }
+
+    @Override
+    public ResponseEntity<String> getStocks(String limit, Integer nextToken) {
+       String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/stocks"
+               + "?limit=" + URLEncoder.encode(limit, StandardCharsets.UTF_8)
+               + "&next_token" + nextToken;
+        HttpHeaders headers = setHeaders();
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
+    }
+
     @Override
     public ResponseEntity<String> deposit(String clientToken, String requestSource, String request) {
         String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/deposit";
-        HttpHeaders headers = setHeaders(clientToken);
-        headers.set("x_request_source", requestSource);
+        HttpHeaders headers = setHeaders(clientToken, requestSource);
         return apiConnection.postAndGetResponseEntity(headers, request, url, HttpMethod.POST);
     }
 
     @Override
     public ResponseEntity<String> getAccount(String clientToken, String requestSource, Integer userId) {
        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/tenant/virtual_account/" + userId;
-        HttpHeaders headers = setHeaders(clientToken);
-        headers.set("x_request_source", requestSource);
+        HttpHeaders headers = setHeaders(clientToken, requestSource);
         return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
     }
 
-    public static HttpHeaders setHeaders(String clientToken){
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("accept-language", "en-US");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x_subject_type", "standard");
-        headers.set("x_client_token", clientToken);
-        return headers;
+    @Override
+    public ResponseEntity<String> fetchDeposits(String clientToken, String requestSource, String limit, Integer nextToken, String startDate, String endDate) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/tenant/deposit"
+                + "?limit=" + URLEncoder.encode(limit, StandardCharsets.UTF_8)
+                + "&next_token" + nextToken
+                + "&start_date" + URLEncoder.encode(startDate, StandardCharsets.UTF_8)
+                + "&end_date" + URLEncoder.encode(endDate, StandardCharsets.UTF_8);
+        /*
+        set header parameters
+         */
+        HttpHeaders headers = setHeaders(clientToken, requestSource);
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
+
     }
+
+
 }
