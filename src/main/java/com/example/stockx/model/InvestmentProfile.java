@@ -1,8 +1,7 @@
 package com.example.stockx.model;
 
 import com.google.gson.annotations.SerializedName;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
+@Table(name = "investment_profiles")
 public class InvestmentProfile {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @SerializedName("yearly_income")
     private int yearlyIncome;
     @SerializedName("source_of_wealth")
@@ -34,5 +38,8 @@ public class InvestmentProfile {
     private String employmentStatus;
     private int dependents;
     private String company;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    private Customer customer;
 
 }

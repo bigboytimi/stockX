@@ -39,8 +39,7 @@ public class ApiConnectionImpl implements ApiConnection {
         HttpEntity<String> httpEntity = new HttpEntity<>(postBody, headers);
 
         try {
-            ResponseEntity<String> response = getRestTemplate().exchange(url, method, httpEntity, String.class);
-            return response;
+            return getRestTemplate().exchange(url, method, httpEntity, String.class);
         } catch (Exception e) {
             e.printStackTrace();
             throw new APIConnectionException("Request Failed, Please Try Again");

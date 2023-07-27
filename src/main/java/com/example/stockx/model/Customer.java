@@ -33,6 +33,6 @@ public class Customer {
     @SerializedName("country_code")
     private String country;
     private String citizenship;
-    @Embedded
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private InvestmentProfile investmentProfile;
 }

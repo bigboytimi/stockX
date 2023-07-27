@@ -2,6 +2,7 @@ package com.example.stockx.service.impl;
 
 import com.example.stockx.dtos.request.TokenRequest;
 import com.example.stockx.dtos.response.TokenResponse;
+import com.example.stockx.service.AccountService;
 import com.example.stockx.service.ApiConnection;
 import com.example.stockx.service.AuthService;
 import com.example.stockx.service.StockTradingService;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class BambooServiceImpl implements AuthService, StockTradingService {
+public class BambooServiceImpl implements AuthService, StockTradingService, AccountService {
     private final ApiConnection apiConnection;
 
     @Value("${api.secret-key}")
@@ -123,6 +124,21 @@ public class BambooServiceImpl implements AuthService, StockTradingService {
         headers.set("x_subject_type", "standard");
         return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
 
+    }
+    @Override
+    public ResponseEntity<String> deposit(String clientToken, String requestSource, String request) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/deposit";
+        HttpHeaders headers = setHeaders(clientToken);
+        headers.set("x_request_source", requestSource);
+        return apiConnection.postAndGetResponseEntity(headers, request, url, HttpMethod.POST);
+    }
+
+    @Override
+    public ResponseEntity<String> getAccount(String clientToken, String requestSource, Integer userId) {
+       String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/tenant/virtual_account/" + userId;
+        HttpHeaders headers = setHeaders(clientToken);
+        headers.set("x_request_source", requestSource);
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
     }
 
     public static HttpHeaders setHeaders(String clientToken){
