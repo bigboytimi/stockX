@@ -17,7 +17,7 @@ public class HeaderUtils {
         headers.set("accept-language", "en-US");
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("x_subject_type", "standard");
-        headers.set("x_client_token", clientToken);
+        headers.set("x-client-token", clientToken);
         return headers;
     }
 
@@ -26,7 +26,7 @@ public class HeaderUtils {
         headers.set("accept-language", "en-US");
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("x_subject_type", "standard");
-        headers.set("x_client_token", clientToken);
+        headers.set("x-client-token", clientToken);
         headers.set("x_request_source", requestSource);
         return headers;
     }

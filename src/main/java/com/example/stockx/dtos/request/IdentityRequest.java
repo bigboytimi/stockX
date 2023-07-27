@@ -10,5 +10,5 @@ import lombok.Setter;
 @Setter
 public class IdentityRequest {
     private String clientToken;
-    private Identity data;
+    private Identity request;
 }

@@ -5,23 +5,25 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface StockTradingService {
-    public String register(String clientToken, String request);
-    public ResponseEntity<String> verifyNumber(String clientToken, String request);
-    public ResponseEntity<String> createProfile(String clientToken, String requestBody);
-    public ResponseEntity<String> verifyIdentity(String clientToken, String requestBody);
-    public ResponseEntity<String> createAffiliation(String clientToken, String requestBody);
-    public ResponseEntity<String> loginUser(String requestBody);
-    public ResponseEntity<String> refreshToken(String requestBody);
-    public ResponseEntity<String> getClientDetails();
-    public ResponseEntity<String> updateUserInfo(String requestBody);
-
-    public ResponseEntity<String> updatePassword(String requestBody);
-
-
-    public ResponseEntity<String> getInvestmentDetails();
 
     public ResponseEntity<String> getStocks(String limit, Integer nextToken);
 
     public ResponseEntity<String> getSearchedStocks(String query, String themeId, String filters, String sort);
+
+    public ResponseEntity<String> calculateOrder(String requestBody, String clientToken, String requestSource, String currency);
+
+    public ResponseEntity<String> placeOrder(String requestBody, String clientToken, String requestSource, String currency);
+
+    public ResponseEntity<String> processOrderStatus(String clientToken, String requestSource, String id);
+
+    public ResponseEntity<String> getPendingOrders(String clientToken, String requestSource, String currency);
+
+    public ResponseEntity<String> getBreakdown(String clientToken, String currency);
+
+    public ResponseEntity<String> withdraw(String clientToken, String requestBody);
+
+    public ResponseEntity<String> getStatus(String reference, String clientToken, String requestSource);
+
+    public ResponseEntity<String> getActions(String clientToken, String requestSource);
 }
 

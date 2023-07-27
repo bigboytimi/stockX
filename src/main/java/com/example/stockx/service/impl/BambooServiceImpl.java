@@ -2,11 +2,7 @@ package com.example.stockx.service.impl;
 
 import com.example.stockx.dtos.request.TokenRequest;
 import com.example.stockx.dtos.response.TokenResponse;
-import com.example.stockx.service.AccountService;
-import com.example.stockx.service.ApiConnection;
-import com.example.stockx.service.AuthService;
-import com.example.stockx.service.StockTradingService;
-import com.example.stockx.utils.HeaderUtils;
+import com.example.stockx.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +18,7 @@ import static com.example.stockx.utils.HeaderUtils.setHeaders;
 
 @Service
 @RequiredArgsConstructor
-public class BambooServiceImpl implements AuthService, StockTradingService, AccountService {
+public class BambooServiceImpl implements AuthService, StockTradingService, AccountService, UserProfileService, RegistrationService {
     private final ApiConnection apiConnection;
 
     @Value("${api.secret-key}")
@@ -141,6 +137,66 @@ public class BambooServiceImpl implements AuthService, StockTradingService, Acco
     }
 
     @Override
+    public ResponseEntity<String> calculateOrder(String requestBody, String clientToken, String requestSource, String currency) {
+       String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/order/calculate";
+       HttpHeaders headers = setHeaders(clientToken, requestSource);
+       headers.set("currency", currency);
+       return apiConnection.postAndGetResponseEntity(headers,requestBody, url, HttpMethod.POST);
+    }
+
+    @Override
+    public ResponseEntity<String> placeOrder(String requestBody, String clientToken, String requestSource, String currency) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/order";
+        HttpHeaders headers = setHeaders(clientToken, requestSource);
+        headers.set("currency", currency);
+        return apiConnection.postAndGetResponseEntity(headers,requestBody, url, HttpMethod.POST);
+    }
+
+    @Override
+    public ResponseEntity<String> processOrderStatus(String clientToken, String requestSource, String id) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/order/".concat(id).concat("/status");
+        HttpHeaders headers = setHeaders(clientToken, requestSource);
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
+    }
+
+    @Override
+    public ResponseEntity<String> getPendingOrders(String clientToken, String requestSource, String currency) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/pending_orders";
+        HttpHeaders headers = setHeaders(clientToken, requestSource);
+        headers.set("currency", currency);
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
+    }
+
+    @Override
+    public ResponseEntity<String> getBreakdown(String clientToken, String currency) {
+        String url =  "https://powered-by-bamboo-sandbox.investbamboo.com/api/portfolio/breakdown";
+        HttpHeaders headers = setHeaders(clientToken);
+        headers.set("currency", currency);
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
+    }
+
+    @Override
+    public ResponseEntity<String> withdraw(String clientToken, String requestBody) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/tenant_brokerage_withdraw/";
+        HttpHeaders headers = setHeaders(clientToken);
+        return apiConnection.postAndGetResponseEntity(headers, requestBody, url, HttpMethod.POST);
+    }
+
+    @Override
+    public ResponseEntity<String> getStatus(String reference, String clientToken, String requestSource) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/tenant/withdraw/status/"+reference+"/";
+        HttpHeaders headers = setHeaders(clientToken, requestSource);
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
+    }
+
+    @Override
+    public ResponseEntity<String> getActions(String clientToken, String requestSource) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/onboard/actions";
+        HttpHeaders headers = setHeaders(clientToken, requestSource);
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
+    }
+
+    @Override
     public ResponseEntity<String> deposit(String clientToken, String requestSource, String request) {
         String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/deposit";
         HttpHeaders headers = setHeaders(clientToken, requestSource);
@@ -158,7 +214,7 @@ public class BambooServiceImpl implements AuthService, StockTradingService, Acco
     public ResponseEntity<String> fetchDeposits(String clientToken, String requestSource, String limit, Integer nextToken, String startDate, String endDate) {
         String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/tenant/deposit"
                 + "?limit=" + URLEncoder.encode(limit, StandardCharsets.UTF_8)
-                + "&next_token" + nextToken
+                + "&next_token=" + nextToken
                 + "&start_date=" + URLEncoder.encode(startDate, StandardCharsets.UTF_8)
                 + "&end_date=" + URLEncoder.encode(endDate, StandardCharsets.UTF_8);
         /*

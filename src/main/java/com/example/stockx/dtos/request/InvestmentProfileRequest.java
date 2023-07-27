@@ -10,5 +10,5 @@ import lombok.Setter;
 @Setter
 public class InvestmentProfileRequest {
         private String clientToken;
-        private InvestmentProfile data;
+        private InvestmentProfile request;
 }

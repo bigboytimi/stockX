@@ -57,27 +57,4 @@ public class RegistrationController {
         GlobalResponse<String> response = new GlobalResponse<>(registerUseCase.addAffiliation(request));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    @GetMapping("/profile")
-    public ResponseEntity<GlobalResponse<ClientDetailsResponse>> getClient() throws InvalidRequestException {
-        GlobalResponse<ClientDetailsResponse> response = new GlobalResponse<>(registerUseCase.getClient());
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-    @PatchMapping("/profile/update-user-info")
-    public ResponseEntity<GlobalResponse<String>> updateUser(@RequestBody UpdateUserRequest request) throws InvalidRequestException {
-        GlobalResponse<String> response = new GlobalResponse<>(registerUseCase.updateUserDetails(request));
-        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
-    }
-
-    @PatchMapping("/profile/update-password")
-    public ResponseEntity<GlobalResponse<String>> updateUser(@RequestBody UpdatePasswordRequest request) throws InvalidRequestException {
-        GlobalResponse<String> response = new GlobalResponse<>(registerUseCase.updatePassword(request));
-        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
-    }
-
-    @GetMapping("/investment-profile")
-    public ResponseEntity<GlobalResponse<InvestmentProfileResponse>> getInvestmentProfile() throws InvalidRequestException {
-        GlobalResponse<InvestmentProfileResponse> response = new GlobalResponse<>(registerUseCase.getInvestmentProfileData());
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 }

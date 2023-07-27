@@ -12,6 +12,6 @@ public interface AccountUseCase {
 
     public AccountDetailsResponse getAccountDetails(Integer userId, HeaderRequest request) throws InvalidRequestException;
 
-    public DepositsResponse getDeposits(HeaderRequest request, String limit, Integer nextToken, String startDate, String endDate);
+    public DepositsResponse getDeposits(HeaderRequest request, String limit, Integer nextToken, String startDate, String endDate) throws InvalidRequestException;
 
 }

@@ -1,7 +1,6 @@
 package com.example.stockx.dtos.request;
 
 import com.example.stockx.dtos.payload.Deposit;
-import com.google.gson.annotations.SerializedName;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,5 +16,5 @@ public class DepositRequest {
     private String requestSource;
     @NotBlank(message = "Incomplete Request: Provide the client token")
     private String clientToken;
-    private Deposit data;
+    private Deposit request;
 }

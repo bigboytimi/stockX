@@ -35,7 +35,7 @@ public class AccountController {
                                                                         @RequestParam(name = "limit") String limit,
                                                                         @RequestParam(name = "next_token") Integer nextToken,
                                                                         @RequestParam(name = "start_date") String startDate,
-                                                                        @RequestParam(name = "end_date") String endDate){
+                                                                        @RequestParam(name = "end_date") String endDate) throws InvalidRequestException {
         GlobalResponse<DepositsResponse> response = new GlobalResponse<>(accountUseCase.getDeposits(request, limit, nextToken, startDate, endDate));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

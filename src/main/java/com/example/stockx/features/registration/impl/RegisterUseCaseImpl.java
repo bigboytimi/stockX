@@ -12,6 +12,7 @@ import com.example.stockx.features.registration.RegisterUseCase;
 import com.example.stockx.model.Customer;
 import com.example.stockx.model.InvestmentProfile;
 import com.example.stockx.repository.CustomerRepository;
+import com.example.stockx.service.RegistrationService;
 import com.example.stockx.service.StockTradingService;
 import com.example.stockx.utils.PasswordUtils;
 import com.example.stockx.utils.ResponseParserUtils;
@@ -28,7 +29,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class RegisterUseCaseImpl implements RegisterUseCase {
-    private final StockTradingService stockTradingService;
+    private final RegistrationService registrationService;
     private final Gson gson;
     private final PasswordUtils encoder;
     private final CustomerRepository customerRepository;
@@ -36,7 +37,7 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
     @Override
     public SignupResponse registerCustomer(SignupRequest request) {
         String clientToken = request.getClientToken();
-        Registration registrationData = request.getData();
+        Registration registrationData = request.getRequest();
 
         String requestBody = gson.toJson(registrationData);
 
@@ -44,7 +45,7 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
         /*
         Send request to Bamboo
          */
-        String apiResponse = stockTradingService.register(clientToken, requestBody);
+        String apiResponse = registrationService.register(clientToken, requestBody);
         /*
         Convert apiResponse to a SignupResponse Object
          */
@@ -76,7 +77,7 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
        String requestBody = gson.toJson(request);
        Type responseType = new TypeToken<LoginResponse>(){}.getType();
 
-       ResponseEntity<String> apiResponse = stockTradingService.loginUser(requestBody);
+       ResponseEntity<String> apiResponse = registrationService.loginUser(requestBody);
 
 
         String apiResponseBody = apiResponse.getBody();
@@ -94,12 +95,12 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
     @Override
     public String createInvestmentProfile(InvestmentProfileRequest request) throws InvalidRequestException {
         String clientToken = request.getClientToken();
-        InvestmentProfile profileData = request.getData();
+        InvestmentProfile profileData = request.getRequest();
 
         String requestBody = gson.toJson(profileData);
 
 
-        ResponseEntity<String> apiResponse = stockTradingService.createProfile(clientToken, requestBody);
+        ResponseEntity<String> apiResponse = registrationService.createProfile(clientToken, requestBody);
 
 
         String responseBody = apiResponse.getBody();
@@ -119,7 +120,7 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
         String requestBody = gson.toJson(request);
 
         Type responseType = new TypeToken<TokenRefreshResponse>() {}.getType();
-        ResponseEntity<String> apiResponse = stockTradingService.refreshToken(requestBody);
+        ResponseEntity<String> apiResponse = registrationService.refreshToken(requestBody);
 
         if (apiResponse.getStatusCode().is2xxSuccessful()){
             return gson.fromJson(apiResponse.getBody(), responseType);
@@ -134,13 +135,13 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
     @Override
     public PhoneVerificationResponse verifyPhoneNumber(PhoneVerificationRequest request) {
        String clientToken = request.getClientToken();
-       PhoneVerification phoneDetails = request.getData();
+       PhoneVerification phoneDetails = request.getRequest();
 
         String requestBody = gson.toJson(phoneDetails);
 
         Type responseType = new TypeToken<PhoneVerificationResponse>(){}.getType();
 
-        ResponseEntity<String> apiResponse = stockTradingService.verifyNumber(clientToken, requestBody);
+        ResponseEntity<String> apiResponse = registrationService.verifyNumber(clientToken, requestBody);
         String apiResponseBody = apiResponse.getBody();
 
         if (apiResponse.getStatusCode().is2xxSuccessful()){
@@ -155,80 +156,13 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
     }
 
     @Override
-    public ClientDetailsResponse getClient() throws InvalidRequestException {
-        Type responseType = new TypeToken<PhoneVerificationResponse>(){}.getType();
-
-        ResponseEntity<String> apiResponse = stockTradingService.getClientDetails();
-
-        String responseBody = apiResponse.getBody();
-
-        if (apiResponse.getStatusCode().is2xxSuccessful()){
-            return gson.fromJson(responseBody, responseType);
-        } else{
-            CustomResponse<Map<String, Object>> customResponse = parserUtils.parseApiResponse(responseBody, new TypeToken<CustomResponse<Map<String, Object>>>() {});
-            Map<String, Object> data = customResponse.getData();
-            String message = (String) data.get("message");
-            throw new InvalidRequestException(message);
-        }
-    }
-
-    @Override
-    public InvestmentProfileResponse getInvestmentProfileData() throws InvalidRequestException {
-        Type responseType = new TypeToken<InvestmentProfileResponse>(){}.getType();
-
-        ResponseEntity<String> apiResponse = stockTradingService.getInvestmentDetails();
-
-        String responseBody = apiResponse.getBody();
-        if (apiResponse.getStatusCode().is2xxSuccessful()){
-            return gson.fromJson(responseBody, responseType);
-        } else{
-            CustomResponse<Map<String, Object>> customResponse = parserUtils.parseApiResponse(responseBody, new TypeToken<CustomResponse<Map<String, Object>>>() {});
-            Map<String, Object> data = customResponse.getData();
-            String message = (String) data.get("message");
-            throw new InvalidRequestException(message);
-        }
-    }
-
-    @Override
-    public String updateUserDetails(UpdateUserRequest request) throws InvalidRequestException {
-        String requestBody = gson.toJson(request);
-        
-        ResponseEntity<String> apiResponse = stockTradingService.updateUserInfo(requestBody);
-
-        if (apiResponse.getStatusCode().is2xxSuccessful()){
-            return "Profile successfully updated";
-        } else {
-            CustomResponse<Map<String, Object>> customResponse = parserUtils.parseApiResponse(apiResponse.getBody(), new TypeToken<CustomResponse<Map<String, Object>>>() {});
-            Map<String, Object> data = customResponse.getData();
-            String message = (String) data.get("message");
-            throw new InvalidRequestException(message);
-        }
-    }
-
-    @Override
-    public String updatePassword(UpdatePasswordRequest request) throws InvalidRequestException {
-        String requestBody = gson.toJson(request);
-
-        ResponseEntity<String> apiResponse = stockTradingService.updatePassword(requestBody);
-
-        if (apiResponse.getStatusCode().is2xxSuccessful()){
-            return "Password successfully updated";
-        }else{
-            CustomResponse<Map<String, Object>> customResponse = parserUtils.parseApiResponse(apiResponse.getBody(), new TypeToken<CustomResponse<Map<String, Object>>>() {});
-            Map<String, Object> data = customResponse.getData();
-            String message = (String) data.get("message");
-            throw new InvalidRequestException(message);
-        }
-    }
-
-    @Override
     public String verifyUserIdentity(IdentityRequest request) {
         String clientToken = request.getClientToken();
-        Identity identityDetails = request.getData();
+        Identity identityDetails = request.getRequest();
 
         String requestBody = gson.toJson(identityDetails);
 
-        ResponseEntity<String> apiResponse = stockTradingService.verifyIdentity(clientToken, requestBody);
+        ResponseEntity<String> apiResponse = registrationService.verifyIdentity(clientToken, requestBody);
 
 
 
@@ -246,12 +180,12 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
     @Override
     public String addAffiliation(AffiliationRequest request) {
         String clientToken = request.getClientToken();
-        Affiliation affiliationData = request.getData();
+        Affiliation affiliationData = request.getRequest();
 
         String requestBody = gson.toJson(affiliationData);
 
 
-        ResponseEntity<String> apiResponse = stockTradingService.createAffiliation(clientToken, requestBody);
+        ResponseEntity<String> apiResponse = registrationService.createAffiliation(clientToken, requestBody);
         if (apiResponse.getStatusCode().is2xxSuccessful()){
             return "Investment profile created";
         } else{
@@ -261,7 +195,4 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
             throw new VerificationFailedException(message);
         }
     }
-
-
-
 }

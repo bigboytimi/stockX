@@ -32,7 +32,11 @@ public class AccountUseCaseImpl implements AccountUseCase {
     public DepositLinkResponse depositMoney(DepositRequest request) throws InvalidRequestException {
         String clientToken = request.getClientToken();
         String requestSource = request.getRequestSource();
-        Deposit deposit = request.getData();
+        Deposit deposit = request.getRequest();
+
+        if (requestSource == null ){
+            throw new InvalidRequestException("requestSource must not be null");
+        }
 
         String requestBody = gson.toJson(deposit);
 
@@ -56,6 +60,10 @@ public class AccountUseCaseImpl implements AccountUseCase {
     public AccountDetailsResponse getAccountDetails(Integer userId, HeaderRequest request) throws InvalidRequestException {
         String clientToken = request.getClientToken();
         String requestSource = request.getRequestSource();
+
+        if (requestSource == null ){
+            throw new InvalidRequestException("requestSource must not be null");
+        }
         Type responseType = new TypeToken<AccountDetailsResponse>() {
         }.getType();
 
@@ -73,9 +81,13 @@ public class AccountUseCaseImpl implements AccountUseCase {
     }
 
     @Override
-    public DepositsResponse getDeposits(HeaderRequest request, String limit, Integer nextToken, String startDate, String endDate) {
+    public DepositsResponse getDeposits(HeaderRequest request, String limit, Integer nextToken, String startDate, String endDate) throws InvalidRequestException {
         String clientToken = request.getClientToken();
         String requestSource = request.getRequestSource();
+
+        if (requestSource == null ){
+            throw new InvalidRequestException("requestSource must not be null");
+        }
         Type responseType = new TypeToken<DepositsResponse>() {
         }.getType();
 
@@ -91,8 +103,6 @@ public class AccountUseCaseImpl implements AccountUseCase {
             throw new VerificationFailedException(message);
         }
     }
-
-
 }
 
 

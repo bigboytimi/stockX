@@ -10,6 +10,6 @@ import lombok.Setter;
 @Setter
 public class PhoneVerificationRequest {
     private String clientToken;
-    private PhoneVerification data;
+    private PhoneVerification request;
 
 }

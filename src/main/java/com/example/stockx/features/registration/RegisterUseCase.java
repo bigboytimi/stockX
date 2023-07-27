@@ -12,10 +12,6 @@ public interface RegisterUseCase {
     public String createInvestmentProfile(InvestmentProfileRequest request) throws InvalidRequestException;
     public TokenRefreshResponse refreshCustomerToken(TokenRefreshRequest request);
     public PhoneVerificationResponse verifyPhoneNumber(PhoneVerificationRequest request);
-    public ClientDetailsResponse getClient() throws InvalidRequestException;
-    public InvestmentProfileResponse getInvestmentProfileData() throws InvalidRequestException;
-    public String updateUserDetails(UpdateUserRequest request) throws InvalidRequestException;
-    public String updatePassword(UpdatePasswordRequest request) throws InvalidRequestException;
     public String verifyUserIdentity(IdentityRequest request);
     public String addAffiliation(AffiliationRequest request);
 }
