@@ -2,6 +2,7 @@ package com.example.stockx.features.stocktrading.impl;
 
 import com.example.stockx.dtos.response.CustomResponse;
 import com.example.stockx.dtos.response.SignupResponse;
+import com.example.stockx.dtos.response.StockSearchResponse;
 import com.example.stockx.dtos.response.StocksResponse;
 import com.example.stockx.exception.LoginFailedException;
 import com.example.stockx.exception.VerificationFailedException;
@@ -32,6 +33,24 @@ public class StockTradingImpl implements StockTradingUseCase {
 
         String responseBody = apiResponse.getBody();
         if (apiResponse.getStatusCode().is2xxSuccessful()){
+            return gson.fromJson(responseBody, responseType);
+        } else {
+            CustomResponse<Map<String, Object>> customResponse = parserUtils.parseApiResponse(responseBody, new TypeToken<CustomResponse<Map<String, Object>>>() {});
+            Map<String, Object> data = customResponse.getData();
+            String message = (String) data.get("message");
+            throw new VerificationFailedException(message);
+        }
+
+
+    }
+
+    @Override
+    public StockSearchResponse searchStocks(String query, String themeId, String filters, String sort) {
+        Type responseType = new TypeToken<StockSearchResponse>(){}.getType();
+        ResponseEntity<String> apiResponse = stockTradingService.getSearchedStocks(query, themeId, filters, sort);
+        String responseBody = apiResponse.getBody();
+
+        if(apiResponse.getStatusCode().is2xxSuccessful()){
             return gson.fromJson(responseBody, responseType);
         } else {
             CustomResponse<Map<String, Object>> customResponse = parserUtils.parseApiResponse(responseBody, new TypeToken<CustomResponse<Map<String, Object>>>() {});

@@ -124,7 +124,18 @@ public class BambooServiceImpl implements AuthService, StockTradingService, Acco
     public ResponseEntity<String> getStocks(String limit, Integer nextToken) {
        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/stocks"
                + "?limit=" + URLEncoder.encode(limit, StandardCharsets.UTF_8)
-               + "&next_token" + nextToken;
+               + "&next_token=" + nextToken;
+        HttpHeaders headers = setHeaders();
+        return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
+    }
+
+    @Override
+    public ResponseEntity<String> getSearchedStocks(String query, String themeId, String filters, String sort) {
+        String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/stocks/search"
+                + "?query=" + URLEncoder.encode(query, StandardCharsets.UTF_8)
+                + "theme_id=" + URLEncoder.encode(themeId, StandardCharsets.UTF_8)
+                + "filters=" + URLEncoder.encode(filters, StandardCharsets.UTF_8)
+                + "sort=" + URLEncoder.encode(sort, StandardCharsets.UTF_8);
         HttpHeaders headers = setHeaders();
         return apiConnection.connectAndGet(headers, url, HttpMethod.GET);
     }
@@ -148,8 +159,8 @@ public class BambooServiceImpl implements AuthService, StockTradingService, Acco
         String url = "https://powered-by-bamboo-sandbox.investbamboo.com/api/tenant/deposit"
                 + "?limit=" + URLEncoder.encode(limit, StandardCharsets.UTF_8)
                 + "&next_token" + nextToken
-                + "&start_date" + URLEncoder.encode(startDate, StandardCharsets.UTF_8)
-                + "&end_date" + URLEncoder.encode(endDate, StandardCharsets.UTF_8);
+                + "&start_date=" + URLEncoder.encode(startDate, StandardCharsets.UTF_8)
+                + "&end_date=" + URLEncoder.encode(endDate, StandardCharsets.UTF_8);
         /*
         set header parameters
          */

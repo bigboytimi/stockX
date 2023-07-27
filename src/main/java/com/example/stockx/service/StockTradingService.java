@@ -22,5 +22,6 @@ public interface StockTradingService {
 
     public ResponseEntity<String> getStocks(String limit, Integer nextToken);
 
+    public ResponseEntity<String> getSearchedStocks(String query, String themeId, String filters, String sort);
 }
 
