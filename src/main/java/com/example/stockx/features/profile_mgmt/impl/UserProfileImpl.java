@@ -1,4 +1,4 @@
-package com.example.stockx.features.user_profile.impl;
+package com.example.stockx.features.profile_mgmt.impl;
 
 import com.example.stockx.dtos.request.UpdatePasswordRequest;
 import com.example.stockx.dtos.request.UpdateUserRequest;
@@ -7,7 +7,7 @@ import com.example.stockx.dtos.response.CustomResponse;
 import com.example.stockx.dtos.response.InvestmentProfileResponse;
 import com.example.stockx.dtos.response.PhoneVerificationResponse;
 import com.example.stockx.exception.InvalidRequestException;
-import com.example.stockx.features.user_profile.UserProfileUseCase;
+import com.example.stockx.features.profile_mgmt.UserProfileUseCase;
 import com.example.stockx.service.UserProfileService;
 import com.example.stockx.utils.ResponseParserUtils;
 import com.google.gson.Gson;

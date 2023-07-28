@@ -1,4 +1,4 @@
-package com.example.stockx.features.user_profile;
+package com.example.stockx.features.profile_mgmt;
 
 import com.example.stockx.dtos.request.UpdatePasswordRequest;
 import com.example.stockx.dtos.request.UpdateUserRequest;

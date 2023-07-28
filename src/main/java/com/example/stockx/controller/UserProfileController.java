@@ -6,7 +6,7 @@ import com.example.stockx.dtos.response.ClientDetailsResponse;
 import com.example.stockx.dtos.response.GlobalResponse;
 import com.example.stockx.dtos.response.InvestmentProfileResponse;
 import com.example.stockx.exception.InvalidRequestException;
-import com.example.stockx.features.user_profile.UserProfileUseCase;
+import com.example.stockx.features.profile_mgmt.UserProfileUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -21,7 +21,7 @@ import static com.example.stockx.utils.HeaderUtils.setHeaders;
 public class BambooServiceImpl implements AuthService, StockTradingService, AccountService, UserProfileService, RegistrationService {
     private final ApiConnection apiConnection;
 
-    @Value("${api.secret-key}")
+    @Value("${app-key}")
     private String appKey;
     @Override
     public TokenResponse authorize(TokenRequest tokenRequest) {
