@@ -26,7 +26,7 @@ public class SwaggerConfig {
     public GroupedOpenApi authenticationEndpoint() {
         return GroupedOpenApi
                 .builder()
-                .group("Getting started")
+                .group("Authorization")
                 .pathsToMatch("/api/v1/auth/**").build();
     }
 
