@@ -7,6 +7,7 @@ import com.example.stockx.dtos.response.PortfolioBreakdownResponse;
 import com.example.stockx.exception.InvalidRequestException;
 import com.example.stockx.features.portfolio.PortfolioUseCase;
 import com.example.stockx.service.StockTradingService;
+import com.example.stockx.utils.GsonSingleton;
 import com.example.stockx.utils.ResponseParserUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,7 +23,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class PortfolioImpl implements PortfolioUseCase {
-    private final Gson gson;
+    Gson gson = GsonSingleton.getInstance();
     private final StockTradingService stockTradingService;
     private final ResponseParserUtils parserUtils;
     @Override

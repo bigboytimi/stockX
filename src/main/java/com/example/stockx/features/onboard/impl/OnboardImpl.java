@@ -6,6 +6,7 @@ import com.example.stockx.dtos.response.WithdrawStatusResponse;
 import com.example.stockx.exception.VerificationFailedException;
 import com.example.stockx.features.onboard.OnboardUseCase;
 import com.example.stockx.service.StockTradingService;
+import com.example.stockx.utils.GsonSingleton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.lang.reflect.Type;
 @Service
 @RequiredArgsConstructor
 public class OnboardImpl implements OnboardUseCase {
-    private final Gson gson;
+    Gson gson = GsonSingleton.getInstance();
     private final StockTradingService stockTradingService;
     @Override
     public OnboardResponse getOnboardActions(HeaderRequest request) {

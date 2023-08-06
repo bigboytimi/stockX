@@ -9,6 +9,7 @@ import com.example.stockx.dtos.response.PhoneVerificationResponse;
 import com.example.stockx.exception.InvalidRequestException;
 import com.example.stockx.features.profile_mgmt.UserProfileUseCase;
 import com.example.stockx.service.UserProfileService;
+import com.example.stockx.utils.GsonSingleton;
 import com.example.stockx.utils.ResponseParserUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,7 +23,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class UserProfileImpl implements UserProfileUseCase {
-    private final Gson gson;
+    Gson gson = GsonSingleton.getInstance();
     private final UserProfileService userProfileService;
     private final ResponseParserUtils parserUtils;
     @Override

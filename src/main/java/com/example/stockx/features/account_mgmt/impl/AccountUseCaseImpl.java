@@ -11,6 +11,7 @@ import com.example.stockx.exception.InvalidRequestException;
 import com.example.stockx.exception.VerificationFailedException;
 import com.example.stockx.features.account_mgmt.AccountUseCase;
 import com.example.stockx.service.AccountService;
+import com.example.stockx.utils.GsonSingleton;
 import com.example.stockx.utils.ResponseParserUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -25,7 +26,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AccountUseCaseImpl implements AccountUseCase {
     private AccountService accountService;
-    private final Gson gson;
+    Gson gson = GsonSingleton.getInstance();
     private final ResponseParserUtils parserUtils;
 
     @Override

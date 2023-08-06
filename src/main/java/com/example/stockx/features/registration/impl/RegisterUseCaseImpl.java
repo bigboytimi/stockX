@@ -14,6 +14,7 @@ import com.example.stockx.model.InvestmentProfile;
 import com.example.stockx.repository.CustomerRepository;
 import com.example.stockx.service.RegistrationService;
 import com.example.stockx.service.StockTradingService;
+import com.example.stockx.utils.GsonSingleton;
 import com.example.stockx.utils.PasswordUtils;
 import com.example.stockx.utils.ResponseParserUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,7 +31,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RegisterUseCaseImpl implements RegisterUseCase {
     private final RegistrationService registrationService;
-    private final Gson gson;
+    Gson gson = GsonSingleton.getInstance();
     private final PasswordUtils encoder;
     private final CustomerRepository customerRepository;
     private final ResponseParserUtils parserUtils;
